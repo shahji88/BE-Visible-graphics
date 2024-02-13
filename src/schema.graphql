@@ -1,14 +1,34 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type RegisterResponse {
+  message: String!
+}
+
+type LoginResponse {
+  access_token: String!
+  refresh_token: String!
+  expires_in: String!
+  email: String!
+  authId: String!
+}
+
 type Query {
-  userByEmail(email: String!): User
+  helloWorld: String!
 }
 
 type Mutation {
-  createUser(email: String!, password: String!, role: String!, status: String!): User!
+  registerUser(data: RegisterInput!): RegisterResponse!
+  login(data: LoginInput!): LoginResponse!
 }
 
-type User {
-  id: Int!
+input RegisterInput {
   email: String!
-  role: String!
-  status: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }
