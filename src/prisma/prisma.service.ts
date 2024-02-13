@@ -3,24 +3,23 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class PrismaService {
-  constructor(private readonly prisma: PrismaClient) {}
+  private readonly prisma: PrismaClient;
 
-  async createUser(email: string, password: string, role: string, status: string) {
-    return this.prisma.user.create({
-      data: {
-        email,
-        password,
-        role,
-        status,
-      },
-    });
+  constructor() {
+    this.prisma = new PrismaClient();
   }
 
-  async findUserByEmail(email: string) {
-    return this.prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
+  async checkConnection(): Promise<boolean> {
+    try {
+      await this.prisma.$connect();
+      return true;
+    } catch (error) {
+      console.error('Database connection error:', error.message);
+      return false;
+    }
+  }
+
+  get user() {
+    return this.prisma.user;
   }
 }
