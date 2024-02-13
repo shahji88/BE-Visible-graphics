@@ -1,0 +1,15 @@
+#Mutation to signup user
+1. Mutation
+mutation registerUser($data:RegisterInput!) {
+  registerUser(data:$data){
+    message
+  }
+}
+
+2. Body
+{
+  "data": {
+    "email": "exo80856@nezid.com",
+    "password": "Susan7872@"
+  }
+}
