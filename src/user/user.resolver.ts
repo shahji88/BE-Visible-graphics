@@ -9,6 +9,8 @@ import {
 } from '@nestjs/common';
 import { RegisterInput } from './dto/register.input';
 import { RegisterResponse } from './dto/register.response';
+import { LoginInput } from './dto/login.input';
+import { LoginResponse } from './dto/login.response';
 
 @Resolver('User')
 export class UserResolver {
@@ -47,6 +49,37 @@ export class UserResolver {
           error?.response?.data?.message ||
           error.message ||
           'Internal server error.',
+      );
+    }
+  }
+
+  @Mutation(() => LoginResponse)
+  async login(@Args('data') loginInput: LoginInput) {
+    try {
+      const data = await this.userService.login({
+        grant_type: 'password',
+        username: loginInput.email,
+        password: loginInput.password,
+        audience: `https://${process.env.AUTH0_DOMAIN}/api/v2/`,
+        scope: 'openid profile email offline_access',
+        client_id: process.env.AUTH0_CLIENT_ID,
+        client_secret: process.env.AUTH0_SECRET,
+      });
+
+      return {
+        success: true,
+        access_token: data?.data?.access_token,
+        refresh_token: data?.data?.refresh_token,
+        expires_in: data?.data?.expires_in,
+        authId: data?.data?.authId,
+        email: data?.data?.email,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(
+        error?.response?.data?.error_description ||
+          error?.response?.data?.message ||
+          error.message ||
+          'Internal Server Error.',
       );
     }
   }

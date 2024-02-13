@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import axios from 'axios';
 import * as bcrypt from 'bcrypt';
-
+import * as jwt from 'jsonwebtoken';
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
@@ -48,6 +48,30 @@ export class UserService {
     return {
       success: true,
       message: 'User successfully registered. Confirmation email sent.',
+    };
+  }
+
+  async login(payload) {
+    const tokenResponse = await axios.post(
+      `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
+      payload,
+    );
+
+    const idToken = tokenResponse.data.id_token;
+    const decoded: any = jwt.decode(idToken);
+
+    if (decoded.email_verified === false) {
+      throw new BadRequestException('Sorry, your email is not verified yet!');
+    }
+
+    return {
+      data: {
+        access_token: tokenResponse?.data?.access_token,
+        refresh_token: tokenResponse?.data?.refresh_token,
+        expires_in: tokenResponse?.data?.expires_in,
+        email: decoded?.email,
+        authId: decoded?.sub,
+      },
     };
   }
 }

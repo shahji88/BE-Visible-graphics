@@ -6,15 +6,29 @@ type RegisterResponse {
   message: String!
 }
 
+type LoginResponse {
+  access_token: String!
+  refresh_token: String!
+  expires_in: String!
+  email: String!
+  authId: String!
+}
+
 type Query {
   helloWorld: String!
 }
 
 type Mutation {
   registerUser(data: RegisterInput!): RegisterResponse!
+  login(data: LoginInput!): LoginResponse!
 }
 
 input RegisterInput {
+  email: String!
+  password: String!
+}
+
+input LoginInput {
   email: String!
   password: String!
 }
