@@ -1,14 +1,7 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
 type Query {
-  userByEmail(email: String!): User
-}
-
-type Mutation {
-  createUser(email: String!, password: String!, role: String!, status: String!): User!
-}
-
-type User {
-  id: Int!
-  email: String!
-  role: String!
-  status: String!
+  helloWorld: String!
 }
