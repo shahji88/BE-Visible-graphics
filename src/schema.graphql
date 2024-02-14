@@ -14,6 +14,10 @@ type LoginResponse {
   authId: String!
 }
 
+type MessageResponse {
+  message: String!
+}
+
 type Query {
   helloWorld: String!
 }
@@ -21,6 +25,8 @@ type Query {
 type Mutation {
   registerUser(data: RegisterInput!): RegisterResponse!
   login(data: LoginInput!): LoginResponse!
+  forgotPassword(email: String!): MessageResponse!
+  resetPassword(data: PasswordResetInput!): MessageResponse!
 }
 
 input RegisterInput {
@@ -31,4 +37,10 @@ input RegisterInput {
 input LoginInput {
   email: String!
   password: String!
+}
+
+input PasswordResetInput {
+  token: String!
+  email: String!
+  newPassword: String!
 }
