@@ -11,6 +11,8 @@ import { RegisterInput } from './dto/register.input';
 import { RegisterResponse } from './dto/register.response';
 import { LoginInput } from './dto/login.input';
 import { LoginResponse } from './dto/login.response';
+import { MessageResponse } from './dto/messsage.response';
+import { PasswordResetInput } from './dto/password-reset.input';
 
 @Resolver('User')
 export class UserResolver {
@@ -80,6 +82,61 @@ export class UserResolver {
           error?.response?.data?.message ||
           error.message ||
           'Internal Server Error.',
+      );
+    }
+  }
+
+  @Mutation(() => MessageResponse)
+  async forgotPassword(@Args('email') email: string) {
+    try {
+      const auth0 = await this.authProvider.getManagementApiToken();
+
+      const response = await axios.get(
+        `https://${process.env.AUTH0_DOMAIN}/api/v2/users-by-email`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${auth0?.accessToken}`,
+          },
+          params: {
+            email: email.toLowerCase(),
+          },
+        },
+      );
+
+      if (response?.data?.length === 0) {
+        throw new BadRequestException(`Email ${email} does not exist.`);
+      }
+      const user = await this.userService.forgotPassword(email);
+      return user;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        error?.response?.data?.error_description ||
+          error?.response?.data?.message ||
+          error.message ||
+          'Internal server error.',
+      );
+    }
+  }
+
+  @Mutation(() => MessageResponse)
+  async resetPassword(@Args('data') data: PasswordResetInput) {
+    const auth0 = await this.authProvider.getManagementApiToken();
+
+    const { token, email, newPassword } = data;
+
+    try {
+      await this.userService.resetPassword(token, email, newPassword, auth0);
+
+      return {
+        message: 'Password reset successfully.',
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(
+        error?.response?.data?.error_description ||
+          error?.response?.data?.message ||
+          error.message ||
+          'Internal server error.',
       );
     }
   }

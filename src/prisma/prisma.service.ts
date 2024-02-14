@@ -22,4 +22,8 @@ export class PrismaService {
   get user() {
     return this.prisma.user;
   }
+
+  get passwordReset() {
+    return this.prisma.passwordReset;
+  }
 }
