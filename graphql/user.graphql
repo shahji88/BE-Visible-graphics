@@ -1,0 +1,68 @@
+#Mutation to signup user
+1. Mutation
+mutation registerUser($data:RegisterInput!) {
+  registerUser(data:$data){
+    message
+  }
+}
+
+2. Body
+{
+  "data": {
+    "email": "exo80856@nezid.com",
+    "password": "Susan7872@"
+  }
+}
+
+#Mutation to login
+1. Mutation
+mutation login($data:LoginInput!){
+  login(data:$data){
+    access_token
+    refresh_token
+    expires_in
+    email
+    authId
+  }
+}
+
+
+2. Body
+{
+  "data": {
+    "email": "exo80856@nezid.com",
+    "password": "Susan7872@"
+  }
+}
+
+
+#Mutation to forget password
+1. Mutation
+mutation forgotPassword($email:String!) {
+  forgotPassword(email:$email){
+    message
+  }
+}
+
+2. Body
+{
+  "email": "vguser@yopmail.com"
+}
+
+
+#Mutation to reset password
+1. Mutation
+mutation resetPassword($data:PasswordResetInput!) {
+  resetPassword(data:$data) {
+    message
+  }
+}
+
+2. Body
+{
+  "data": {
+    "token": "c30bb3e6-5c57-4a78-aa3c-fb1abb643ace",
+    "email": "vguser@yopmail.com",
+    "newPassword": "Password@1234"
+  }
+}

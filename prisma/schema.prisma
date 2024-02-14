@@ -9,9 +9,19 @@ datasource db {
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
+  id       String      @id @default(cuid())
   email    String   @unique
   password String
-  role     String
-  status   String
+  authId   String   @unique
+
+  createdAt DateTime @default(now())
+}
+
+model PasswordReset {
+  id        String      @id @default(cuid())
+  email     String
+  token     String   @unique
+  expiresAt DateTime
+
+  createdAt DateTime @default(now())
 }
